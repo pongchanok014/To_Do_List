@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale= 1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie-edge'>
+  <title></title>
+</head>
+<body>
+  <h1>To Do List</h1>
+  <div> 
+    <!-- use onclick to specify the action -->
+    <button onclick="handlers.displayList()">Display List</button>
+    <button onclick="handlers.toggleAll()">Toggle All</button>
+  </div>
+
+  <div>
+    <button onclick="handlers.addToDo()">Add</button>
+    <input id ="addToDoTextInput" type="text">
+  </div>
+
+  <div>
+    <button onclick ="handlers.changeToDo()">Change</button>
+    <input id='changePositionNumInput' type="number">
+    <input id='changeTextInput' type="text">
+  </div>
+  <div>
+    <button onclick ="handlers.deleteToDo()">Delete</button>
+    <input id='deletePositionInput' type="number">
+  </div>
+  <div>
+    <button onclick ="handlers.toggleCompleted()">Toggle</button>
+    <input id='togglePositionInput' type="number">
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
