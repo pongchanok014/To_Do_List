@@ -2,99 +2,137 @@ let todoList = {
 
     todos : [],
     
-displayToDo : function() {
-    if (this.todos.length === 0){
-    console.log('You to do is empty')
-    } else { 
-    for (i = 0 ; i<this.todos.length ; i++){
-    if (this.todos[i].completed === true){
-    console.log('(x)' +  this.todos[i].todoText);
-    } else {
-    console.log('( )' +  this.todos[i].todoText);
-    }
-    }
-  }
-},
 addToDo : function(todoText) {
     this.todos.push({
     todoText : todoText,
     completed : false
     })
-    this.displayToDo();
     },
     
 changeToDo : function(position,todoText) {
     this.todos[position].todoText = todoText;
-    this.displayToDo();
     },
     
 deleteToDo : function(position) {
     this.todos.splice(position,1);
-    this.displayToDo();
     },
     
 toggleCompleted : function(position) {
     let todo = this.todos[position]
     todo.completed = !todo.completed;
-    this.displayToDo();
     },
-
 
 toggleAll : function() {
     let totalTodo = this.todos.length;
     let completedTodo = 0;
 
-    for (i = 0 ; i < totalTodo ; i++){
-        if (this.todos[i].completed === true){
-            completedTodo++;
+    //Get number of complete to do
+    this.todos.forEach(function(todo){
+        if(todo.completed === true){
+            completedTodo++
         }
-    }
-    if (totalTodo === completedTodo){
-        for (i = 0 ; i < totalTodo ; i++){
-            this.todos[i].completed = false;
-        }
+    }),
+
+    //Case 1 : If everthing true ,makes everthing false.
+    this.todos.forEach(function(todo) {
+        if (totalTodo === completedTodo){
+            todo.completed = false;
+    //Case 2 : otherwise makeeverthing true
         } else {
-        for (i = 0 ; i < totalTodo ; i++){
-            this.todos[i].completed = true;
-            }    
+            todo.completed = true;
         }
-    this.displayToDo();
-    }
+    })
 }
+};
 
 // refactoring function to make it more readable
 let handlers = {
-    displayList : function(){
-        todoList.displayToDo();
-    },
-
-    addToDo : function() {
+addToDo : function() {
     let addToDoTextInput = document.querySelector('#addToDoTextInput');
     todoList.addToDo(addToDoTextInput.value) 
     addToDoTextInput.value = '';
-    },
-    
-    changeToDo : function() {
-      let changePositionNumInput = document.querySelector('#changePositionNumInput')  
-      let changeTextInput = document.querySelector('#changeTextInput')  
-      todoList.changeToDo(changePositionNumInput.valueAsNumber , changeTextInput.value);
-      changePositionNumInput.value = '';  
-      changeTextInput.value = '';  
+    view.displayToDo();
     },
 
-    deleteToDo : function() {
-      let deletePositionInput = document.querySelector('#deletePositionInput')  
-      todoList.deleteToDo(deletePositionInput.valueAsNumber);
-      deletePositionInput.value = '';  
-    },
+changeToDo : function() {
+    let changePositionNumInput = document.querySelector('#changePositionNumInput')  
+    let changeTextInput = document.querySelector('#changeTextInput')  
+    todoList.changeToDo(changePositionNumInput.valueAsNumber , changeTextInput.value);
+    changePositionNumInput.value = '';  
+    changeTextInput.value = '';  
+    view.displayToDo();
+},
 
-    toggleCompleted : function() {
-        let togglePositionInput = document.querySelector('#togglePositionInput');
-        todoList.toggleCompleted(togglePositionInput.valueAsNumber) 
-        togglePositionInput.value = '';
-    },
+deleteToDo : function(position) {
+    todoList.deleteToDo(position);
+    view.displayToDo();
+},
 
-    toggleAll : function(){
-        todoList.toggleAll();
-    }
+toggleCompleted : function() {
+    let togglePositionInput = document.querySelector('#togglePositionInput');
+    todoList.toggleCompleted(togglePositionInput.valueAsNumber) 
+    togglePositionInput.value = '';
+    view.displayToDo();
+},
+
+toggleAll : function(){
+    todoList.toggleAll();
+    view.displayToDo();
+    }    
 };
+
+
+/*requirement
+1.append new li (contains text from user) to DOM (ul)
+2.display text when user click add ( w/ todoTextWithCompletion)*/
+let view = {
+     
+displayToDo: function() {   
+    let todosUl = document.querySelector('ul');
+    todosUl.innerHTML = '';
+
+    todoList.todos.forEach(function (todo, position){ // callback also pass position parameter
+    let todosLi = document.createElement('li');
+    let todoTextWithCompletion = '';
+
+    // show todoTextWithCompletion
+    if (todo.completed === true) {
+        todoTextWithCompletion = '(x) ' + todo.todoText;
+    } else {
+        todoTextWithCompletion = '( ) ' + todo.todoText;
+    }
+    //append new Li to Ul
+    todosLi.id = position;
+    todosLi.textContent = todoTextWithCompletion;
+    todosLi.appendChild(this.createDeleteButton())
+    todosUl.appendChild(todosLi);
+    },this)}, // this refered to view 
+    // using forEach in callback function have to use this format
+    //arr.forEach(callback(currentValue [, index [, array]])[, thisArg]
+    //that why ewr
+
+
+
+createDeleteButton : function() {
+    let deleteButton = document.createElement('button')
+    deleteButton.textContent = "Delete";
+    deleteButton.className = "deleteButton";
+    return deleteButton;
+    },
+
+setUpEventListener : function() {
+    let todosUl = document.querySelector('ul')
+
+    todosUl.addEventListener('click' , function(event) {
+    //Get the element that was clicked on.
+    let elementClicked = event.target;
+    //check if elementCliced is a delete button
+    if(elementClicked.className === 'deleteButton'){
+        handlers.deleteToDo(parseInt(elementClicked.parentNode.id))
+        }
+    })
+  }
+};
+
+view.setUpEventListener();
+
