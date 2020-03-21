@@ -1,5 +1,4 @@
 let todoList = {
-
     todos : [],
     
 addToDo : function(todoText) {
@@ -35,9 +34,9 @@ toggleAll : function() {
 
     //Case 1 : If everthing true ,makes everthing false.
     this.todos.forEach(function(todo) {
-        if (totalTodo === completedTodo){
+        if(totalTodo === completedTodo){
             todo.completed = false;
-    //Case 2 : otherwise makeeverthing true
+    //Case 2 : otherwise make everything true
         } else {
             todo.completed = true;
         }
@@ -45,7 +44,8 @@ toggleAll : function() {
 }
 };
 
-// refactoring function to make it more readable
+// Refactoring function to make it more readable...
+// Coresponding with HTML with 'onclick' events
 let handlers = {
 addToDo : function() {
     let addToDoTextInput = document.querySelector('#addToDoTextInput');
@@ -79,7 +79,7 @@ toggleAll : function(){
     todoList.toggleAll();
     view.displayToDo();
     }    
-};
+};//End of refactoring function
 
 
 /*requirement
@@ -95,16 +95,17 @@ displayToDo: function() {
     let todosLi = document.createElement('li');
     let todoTextWithCompletion = '';
 
-    // show todoTextWithCompletion
+    // show to do text from user's input with ( )
     if (todo.completed === true) {
         todoTextWithCompletion = '(x) ' + todo.todoText;
     } else {
         todoTextWithCompletion = '( ) ' + todo.todoText;
     }
+
     //append new Li to Ul
     todosLi.id = position;
     todosLi.textContent = todoTextWithCompletion;
-    todosLi.appendChild(this.createDeleteButton())
+    todosLi.appendChild(this.createDeleteButton())// append className = 'deleteButton' to each Li
     todosUl.appendChild(todosLi);
     },this)}, // this refered to view 
     // using forEach in callback function have to use this format
@@ -112,27 +113,30 @@ displayToDo: function() {
     //that why ewr
 
 
-
+//create delete button for each to do
 createDeleteButton : function() {
     let deleteButton = document.createElement('button')
     deleteButton.textContent = "Delete";
-    deleteButton.className = "deleteButton";
+    deleteButton.classList.add("deleteButton");
     return deleteButton;
     },
 
-setUpEventListener : function() {
-    let todosUl = document.querySelector('ul')
 
+    // create addEventListner for Ul insdead of each Li (in case of preventing from systematic problem later)
+    setUpEventListener : function() {
+        let todosUl = document.querySelector('ul')
+        
     todosUl.addEventListener('click' , function(event) {
     //Get the element that was clicked on.
     let elementClicked = event.target;
-    //check if elementCliced is a delete button
+    //if delete btn is clicked(checked by className 'deleteButton') 
+    // => delete that id (in that parentNode)
     if(elementClicked.className === 'deleteButton'){
         handlers.deleteToDo(parseInt(elementClicked.parentNode.id))
         }
     })
   }
-};
+};//End of display setting
 
 view.setUpEventListener();
 
